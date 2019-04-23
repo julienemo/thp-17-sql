@@ -1,0 +1,100 @@
+0- set up
+$ sqlite3 chinook.db  # open a specific db with sqlite3
+$ .tables  # see what tables there are in the db
+
+
+1- sortir tous les albums
+$ SELECT * FROM albums;  # the semi-column is VERY important
+results: 347 lines
+
+2- Récupérer tous les albums dont le titre contient "Great"
+$ SELECT * FROM albums WHERE Title LIKE '%Great%';
+# the % before and after the regex is INDISPENSABLE
+
+results:
+36|Greatest Hits II|51
+37|Greatest Kiss|52
+67|Vault: Def Leppard's Greatest Hits|78
+141|Greatest Hits|100
+162|Motley Crue Greatest Hits|109
+185|Greatest Hits I|51
+202|Rotten Apples: Greatest Hits|131
+215|The Police Greatest Hits|141
+286|Great Opera Choruses|220
+294|Great Performances - Barber's Adagio and Other Romantic Favorites for Strings|228
+305|Great Recordings of the Century - Mahler: Das Lied von der Erde|240
+339|Great Recordings of the Century: Paganini's 24 Caprices|268
+341|Great Recordings of the Century - Shubert: Schwanengesang, 4 Lieder|270
+
+3.Donner le nombre total d'albums contenus dans la base
+$ SELECT COUNT(Title) FROM albums;
+result:347
+
+4.Supprimer tous les albums dont le nom contient "music"
+$ DELETE FROM albums WHERE Title LIKE "%music%";
+result : 4 lines deleted
+
+5.Récupérer tous les albums écrits par AC/DC
+$ SELECT * FROM artists JOIN albums ON albums.ArtistId = artists.ArtistId WHERE artists.Name LIKE "%AC/DC%";
+
+results:
+1|AC/DC|1|For Those About To Rock We Salute You|1
+1|AC/DC|4|Let There Be Rock|1
+
+
+6. Récupérer tous les titres des albums de AC/DC
+$ SELECT tracks.Name FROM artists JOIN albums ON artists.ArtistId = albums.ArtistId JOIN tracks ON tracks.AlbumId = albums.AlbumId WHERE artists.Name LIKE "%AC/DC%";
+
+results:
+For Those About To Rock (We Salute You)
+Put The Finger On You
+Let's Get It Up
+Inject The Venom
+Snowballed
+Evil Walks
+C.O.D.
+Breaking The Rules
+Night Of The Long Knives
+Spellbound
+Go Down
+Dog Eat Dog
+Let There Be Rock
+Bad Boy Boogie
+Problem Child
+Overdose
+Hell Ain't A Bad Place To Be
+Whole Lotta Rosie
+
+7.Récupérer la liste des titres de l'album "Let There Be Rock"
+$ SELECT tracks.Name
+FROM tracks JOIN albums
+ON tracks.AlbumId = albums.AlbumId
+WHERE albums.Title LIKE "%Let There Be Rock%";
+
+results:
+Go Down
+Dog Eat Dog
+Let There Be Rock
+Bad Boy Boogie
+Problem Child
+Overdose
+Hell Ain't A Bad Place To Be
+Whole Lotta Rosie
+
+
+8.Afficher le prix de cet album ainsi que sa durée totale
+$ SELECT SUM(Milliseconds), SUM(UnitPrice) FROM tracks WHERE AlbumId= 4;
+
+results: 2453259|7.92
+
+9.Afficher le coût de l'intégralité de la discographie de "Deep Purple"
+$ SELECT SUM(UnitPrice) FROM artists JOIN albums ON artists.ArtistId = albums.ArtistId JOIN tracks ON tracks.AlbumId = albums.AlbumId WHERE artists.Name LIKE "%Deep Purple%";
+
+results : 91.0799999999999
+
+
+
+10. Créer l'album de ton artiste favori en base, en renseignant correctement les trois tables albums, artists et tracks
+$ INSERT INTO albums (Title, ArtistId) VALUES ("Julie says so", 1);
+results
+348|Julie says so|1
